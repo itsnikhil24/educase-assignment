@@ -3,6 +3,7 @@
 A RESTful API built with **Node.js**, **Express.js**, and **MySQL** to manage school data. Supports adding schools and listing them sorted by proximity to a user-specified location using the Haversine formula.
 
 ---
+# API Base URL (deployed): https://educase-assignment-97yg.onrender.com/
 
 ## 📁 Project Structure
 
@@ -20,10 +21,11 @@ school-management-api/
 │   └── schoolRoutes.js     # API route definitions
 ├── utils/
 │   └── distance.js         # Haversine distance calculator
-├── .env.example            # Environment variable template
+├── .env                    # Environment variable template
 ├── .gitignore
 ├── app.js                  # App entry point
-└── package.json
+├── package.json
+└── package-lock.json
 ```
 
 ---
@@ -41,18 +43,19 @@ school-management-api/
 
 ---
 
-## ⚙️ Getting Started
+## ⚙️ Local Setup
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v18+
-- [MySQL](https://www.mysql.com/) v8+
+- [Node.js](https://nodejs.org/) 
+- [MySQL](https://www.mysql.com/) 
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/school-management-api.git
-cd school-management-api
+git clone https://github.com/itsnikhil24/educase-assignment
+cd educase-assignment
+cd Backend
 ```
 
 ### 2. Install dependencies
@@ -103,7 +106,7 @@ The server will start at `http://localhost:3000`.
 
 ### Base URL
 ```
-http://localhost:3000/api
+http://localhost:3000/
 ```
 
 ---
@@ -116,10 +119,10 @@ Adds a new school to the database.
 
 ```json
 {
-  "name": "Delhi Public School",
-  "address": "Sector 45, Gurugram, Haryana",
-  "latitude": 28.4089,
-  "longitude": 77.0325
+  "name": "St Xavier School",
+  "address": "Mohali",
+  "latitude": 30.7046,
+  "longitude": 76.7179
 }
 ```
 
@@ -132,19 +135,25 @@ Adds a new school to the database.
 | `latitude` | Float | Required, between -90 and 90 |
 | `longitude` | Float | Required, between -180 and 180 |
 
+**Example POST Request**
+
+```
+   api/addSchool
+```
+
 **Success Response** `201 Created`
 
 ```json
 {
-  "success": true,
-  "message": "School added successfully",
-  "data": {
-    "id": 1,
-    "name": "Delhi Public School",
-    "address": "Sector 45, Gurugram, Haryana",
-    "latitude": 28.4089,
-    "longitude": 77.0325
-  }
+    "success": true,
+    "message": "School added successfully",
+    "data": {
+        "id": 3,
+        "name": "St Xavier School",
+        "address": "Mohali",
+        "latitude": 30.7046,
+        "longitude": 76.7179
+    }
 }
 ```
 
@@ -176,40 +185,42 @@ Fetches all schools sorted by distance from the user's location.
 | `latitude` | Float | ✅ | User's latitude (-90 to 90) |
 | `longitude` | Float | ✅ | User's longitude (-180 to 180) |
 
-**Example Request**
+**Example GET Request**
 
 ```
-GET /api/listSchools?latitude=28.6139&longitude=77.2090
+  api/listSchools?latitude=30.7333&longitude=76.7794
 ```
 
 **Success Response** `200 OK`
 
 ```json
 {
-  "success": true,
-  "count": 2,
-  "user_location": {
-    "latitude": 28.6139,
-    "longitude": 77.2090
-  },
-  "data": [
-    {
-      "id": 2,
-      "name": "Closest School",
-      "address": "MG Road, New Delhi",
-      "latitude": 28.6200,
-      "longitude": 77.2100,
-      "distance_km": 0.87
+    "success": true,
+    "count": 2,
+    "user_location": {
+        "latitude": 30.7333,
+        "longitude": 76.7794
     },
-    {
-      "id": 1,
-      "name": "Farther School",
-      "address": "Sector 45, Gurugram, Haryana",
-      "latitude": 28.4089,
-      "longitude": 77.0325,
-      "distance_km": 24.13
-    }
-  ]
+    "data": [
+        {
+            "id": 1,
+            "name": "Delhi Public School",
+            "address": "Sector 45 Chandigarh",
+            "latitude": 30.733299,
+            "longitude": 76.779404,
+            "created_at": "2026-05-08T03:53:26.000Z",
+            "distance_km": 0
+        },
+        {
+            "id": 2,
+            "name": "St Xavier School",
+            "address": "Mohali",
+            "latitude": 30.704599,
+            "longitude": 76.717903,
+            "created_at": "2026-05-08T03:53:43.000Z",
+            "distance_km": 6.69
+        }
+    ]
 }
 ```
 
@@ -234,33 +245,7 @@ CREATE TABLE IF NOT EXISTS schools (
 
 Proximity sorting uses the **Haversine formula**, which calculates the great-circle distance between two points on Earth's surface given their latitude and longitude. This accounts for the curvature of the Earth and gives accurate real-world distances in kilometres.
 
----
 
-## 🧪 Testing with Postman
-
-1. Import the `postman_collection.json` file from the repository into Postman.
-2. Set the `base_url` collection variable to your server URL (default: `http://localhost:3000/api`).
-3. The collection includes the following requests:
-   - ✅ Add School (valid payload)
-   - ❌ Add School — Validation Error
-   - ✅ List Schools by Proximity
-   - ❌ List Schools — Missing Params
-
----
-
-## 🚀 Deployment
-
-This API can be deployed to any Node.js hosting provider. Recommended options:
-
-| Platform | Database |
-|---|---|
-| [Railway](https://railway.app) | Built-in MySQL plugin |
-| [Render](https://render.com) | [Aiven](https://aiven.io) (free MySQL) |
-| [Cyclic](https://cyclic.sh) | [PlanetScale](https://planetscale.com) (free MySQL) |
-
-After deploying, update the `base_url` variable in your Postman collection to your live URL.
-
----
 
 ## 🔒 Security Practices
 
@@ -268,8 +253,3 @@ After deploying, update the `base_url` variable in your Postman collection to yo
 - Input is validated and sanitised via `express-validator` before reaching the database.
 - Sensitive credentials are stored in `.env` and never committed to the repository.
 
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
